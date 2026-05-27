@@ -2,8 +2,6 @@ package buffer
 
 import (
 	"encoding/gob"
-	"io"
-	"math"
 )
 
 type partition struct {
@@ -15,86 +13,19 @@ type partition struct {
 // It automatically allocates new buffers with pool.Get() to extend is length, and
 // pool.Put() to release unused buffers as it shrinks.
 func NewPartition(pool Pool, buffers ...Buffer) Buffer {
-	return &partition{
-		Pool: pool,
-		List: buffers,
-	}
+	_ = "STUB: not implemented"
+	return *new(Buffer)
 }
 
-func (buf *partition) Cap() int64 {
-	return math.MaxInt64
-}
+func (buf *partition) Cap() int64 { _ = "STUB: not implemented"; return 0 }
 
-func (buf *partition) Read(p []byte) (n int, err error) {
-	for len(p) > 0 {
+func (buf *partition) Read(p []byte) (n int, err error) { _ = "STUB: not implemented"; return 0, nil }
 
-		if len(buf.List) == 0 {
-			return n, io.EOF
-		}
+func (buf *partition) grow() error { _ = "STUB: not implemented"; return nil }
 
-		buffer := buf.List[0]
+func (buf *partition) Write(p []byte) (n int, err error) { _ = "STUB: not implemented"; return 0, nil }
 
-		if Empty(buffer) {
-			buf.Pool.Put(buf.Pop())
-			continue
-		}
-
-		m, er := buffer.Read(p)
-		n += m
-		p = p[m:]
-
-		if er != nil && er != io.EOF {
-			return n, er
-		}
-
-	}
-	return n, nil
-}
-
-func (buf *partition) grow() error {
-	next, err := buf.Pool.Get()
-	if err != nil {
-		return err
-	}
-	buf.Push(next)
-	return nil
-}
-
-func (buf *partition) Write(p []byte) (n int, err error) {
-	for len(p) > 0 {
-
-		if len(buf.List) == 0 {
-			if err := buf.grow(); err != nil {
-				return n, err
-			}
-		}
-
-		buffer := buf.List[len(buf.List)-1]
-
-		if Full(buffer) {
-			if err := buf.grow(); err != nil {
-				return n, err
-			}
-			continue
-		}
-
-		m, er := buffer.Write(p)
-		n += m
-		p = p[m:]
-
-		if er != nil && er != io.ErrShortWrite {
-			return n, er
-		}
-
-	}
-	return n, nil
-}
-
-func (buf *partition) Reset() {
-	for len(buf.List) > 0 {
-		buf.Pool.Put(buf.Pop())
-	}
-}
+func (buf *partition) Reset() { _ = "STUB: not implemented"; return }
 
 func init() {
 	gob.Register(&partition{})

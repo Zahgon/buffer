@@ -2,9 +2,6 @@ package buffer
 
 import (
 	"encoding/gob"
-	"io"
-	"io/ioutil"
-	"math"
 )
 
 type discard struct{}
@@ -13,23 +10,15 @@ type discard struct{}
 // All of its methods are concurrent safe.
 var Discard Buffer = discard{}
 
-func (buf discard) Len() int64 {
-	return 0
-}
+func (buf discard) Len() int64 { _ = "STUB: not implemented"; return 0 }
 
-func (buf discard) Cap() int64 {
-	return math.MaxInt64
-}
+func (buf discard) Cap() int64 { _ = "STUB: not implemented"; return 0 }
 
-func (buf discard) Reset() {}
+func (buf discard) Reset() { _ = "STUB: not implemented"; return }
 
-func (buf discard) Read(p []byte) (n int, err error) {
-	return 0, io.EOF
-}
+func (buf discard) Read(p []byte) (n int, err error) { _ = "STUB: not implemented"; return 0, nil }
 
-func (buf discard) Write(p []byte) (int, error) {
-	return ioutil.Discard.Write(p)
-}
+func (buf discard) Write(p []byte) (int, error) { _ = "STUB: not implemented"; return 0, nil }
 
 func init() {
 	gob.Register(&discard{})

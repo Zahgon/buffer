@@ -3,7 +3,6 @@ package buffer
 
 import (
 	"io"
-	"os"
 )
 
 // Buffer is used to Write() data which will be Read() later.
@@ -22,27 +21,17 @@ type BufferAt interface {
 	io.WriterAt
 }
 
-func len64(p []byte) int64 {
-	return int64(len(p))
-}
+func len64(p []byte) int64 { _ = "STUB: not implemented"; return 0 }
 
 // Gap returns buf.Cap() - buf.Len()
-func Gap(buf Buffer) int64 {
-	return buf.Cap() - buf.Len()
-}
+func Gap(buf Buffer) int64 { _ = "STUB: not implemented"; return 0 }
 
 // Full returns true iff buf.Len() == buf.Cap()
-func Full(buf Buffer) bool {
-	return buf.Len() == buf.Cap()
-}
+func Full(buf Buffer) bool { _ = "STUB: not implemented"; return false }
 
 // Empty returns false iff buf.Len() == 0
-func Empty(buf Buffer) bool {
-	return buf.Len() == 0
-}
+func Empty(buf Buffer) bool { _ = "STUB: not implemented"; return false }
 
 // NewUnboundedBuffer returns a Buffer which buffers "mem" bytes to memory
 // and then creates file's of size "file" to buffer above "mem" bytes.
-func NewUnboundedBuffer(mem, file int64) Buffer {
-	return NewMulti(New(mem), NewPartition(NewFilePool(file, os.TempDir())))
-}
+func NewUnboundedBuffer(mem, file int64) Buffer { _ = "STUB: not implemented"; return *new(Buffer) }

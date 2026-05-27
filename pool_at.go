@@ -1,11 +1,7 @@
 package buffer
 
 import (
-	"bytes"
-	"encoding/binary"
 	"encoding/gob"
-	"io/ioutil"
-	"os"
 	"sync"
 )
 
@@ -23,25 +19,11 @@ type poolAt struct {
 // NewPoolAt returns a PoolAt(), it's backed by a sync.Pool so its safe for concurrent use.
 // Get() and Put() errors will always be nil.
 // It will not work with gob.
-func NewPoolAt(New func() BufferAt) PoolAt {
-	return &poolAt{
-		poolAt: sync.Pool{
-			New: func() interface{} {
-				return New()
-			},
-		},
-	}
-}
+func NewPoolAt(New func() BufferAt) PoolAt { _ = "STUB: not implemented"; return *new(PoolAt) }
 
-func (p *poolAt) Get() (BufferAt, error) {
-	return p.poolAt.Get().(BufferAt), nil
-}
+func (p *poolAt) Get() (BufferAt, error) { _ = "STUB: not implemented"; return *new(BufferAt), nil }
 
-func (p *poolAt) Put(buf BufferAt) error {
-	buf.Reset()
-	p.poolAt.Put(buf)
-	return nil
-}
+func (p *poolAt) Put(buf BufferAt) error { _ = "STUB: not implemented"; return nil }
 
 type memPoolAt struct {
 	N int64
@@ -51,29 +33,11 @@ type memPoolAt struct {
 // NewMemPoolAt returns a PoolAt, Get() returns an in memory buffer of max size N.
 // Put() returns the buffer to the pool after resetting it.
 // Get() and Put() errors will always be nil.
-func NewMemPoolAt(N int64) PoolAt {
-	return &memPoolAt{
-		N: N,
-		PoolAt: NewPoolAt(func() BufferAt {
-			return New(N)
-		}),
-	}
-}
+func NewMemPoolAt(N int64) PoolAt { _ = "STUB: not implemented"; return *new(PoolAt) }
 
-func (m *memPoolAt) MarshalBinary() ([]byte, error) {
-	buf := bytes.NewBuffer(nil)
-	err := binary.Write(buf, binary.LittleEndian, m.N)
-	return buf.Bytes(), err
-}
+func (m *memPoolAt) MarshalBinary() ([]byte, error) { _ = "STUB: not implemented"; return nil, nil }
 
-func (m *memPoolAt) UnmarshalBinary(data []byte) error {
-	buf := bytes.NewReader(data)
-	err := binary.Read(buf, binary.LittleEndian, &m.N)
-	m.PoolAt = NewPoolAt(func() BufferAt {
-		return New(m.N)
-	})
-	return err
-}
+func (m *memPoolAt) UnmarshalBinary(data []byte) error { _ = "STUB: not implemented"; return nil }
 
 type filePoolAt struct {
 	N         int64
@@ -84,26 +48,11 @@ type filePoolAt struct {
 // Put() closes and deletes the underlying file for the buffer.
 // Get() may return an error if it fails to create a file for the buffer.
 // Put() may return an error if it fails to delete the file.
-func NewFilePoolAt(N int64, dir string) PoolAt {
-	return &filePoolAt{N: N, Directory: dir}
-}
+func NewFilePoolAt(N int64, dir string) PoolAt { _ = "STUB: not implemented"; return *new(PoolAt) }
 
-func (p *filePoolAt) Get() (BufferAt, error) {
-	file, err := ioutil.TempFile(p.Directory, "buffer")
-	if err != nil {
-		return nil, err
-	}
-	return NewFile(p.N, file), nil
-}
+func (p *filePoolAt) Get() (BufferAt, error) { _ = "STUB: not implemented"; return *new(BufferAt), nil }
 
-func (p *filePoolAt) Put(buf BufferAt) (err error) {
-	buf.Reset()
-	if fileBuf, ok := buf.(*fileBuffer); ok {
-		fileBuf.file.Close()
-		err = os.Remove(fileBuf.file.Name())
-	}
-	return err
-}
+func (p *filePoolAt) Put(buf BufferAt) (err error) { _ = "STUB: not implemented"; return nil }
 
 func init() {
 	gob.Register(&memPoolAt{})
